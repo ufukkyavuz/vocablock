@@ -1,0 +1,19 @@
+import React from "react";
+import { Composition } from "remotion";
+import "./fonts";
+import { Promo, TOTAL_DURATION } from "./Promo";
+
+export const Root: React.FC = () => {
+  return (
+    <>
+      <Composition
+        id="Promo"
+        component={Promo}
+        durationInFrames={TOTAL_DURATION}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+    </>
+  );
+};
