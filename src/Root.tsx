@@ -1,9 +1,8 @@
-import React from "react";
 import { Composition } from "remotion";
 import "./fonts";
 import { Promo, TOTAL_DURATION } from "./Promo";
 
-export const Root: React.FC = () => {
+export const RemotionRoot: React.FC = () => {
   return (
     <>
       <Composition

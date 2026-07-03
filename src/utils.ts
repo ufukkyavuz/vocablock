@@ -1,6 +1,11 @@
-import { spring, useCurrentFrame, useVideoConfig } from "remotion";
+import {
+  spring,
+  useCurrentFrame,
+  useVideoConfig,
+  type SpringConfig,
+} from "remotion";
 
-export const useEnter = (delay = 0, config?: Partial<Parameters<typeof spring>[0]>) => {
+export const useEnter = (delay = 0, config?: Partial<SpringConfig>) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   return spring({

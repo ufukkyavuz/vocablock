@@ -21,9 +21,11 @@ A Remotion project that turns the [VocabLock Figma screens](https://www.figma.co
 
 ```bash
 npm install
-npm start          # Remotion Studio — live preview & scrub the timeline
-npm run build       # Render out/vocablock-promo.mp4
+npm run dev          # Remotion Studio — live preview & scrub the timeline
+npm run render       # Render out/vocablock-promo.mp4
 ```
+
+Scaffolding follows the official `create-video` "Blank" template conventions (React 19, `RemotionRoot`, flat ESLint config, Prettier).
 
 ## Editing the story
 

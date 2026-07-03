@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
+import { AbsoluteFill, interpolate } from "remotion";
 import { PhoneFrame } from "../components/PhoneFrame";
 import { colors, fonts } from "../tokens";
 import { useEnter } from "../utils";
@@ -34,7 +34,6 @@ const StatPill: React.FC<{ value: string; label: string; delay: number }> = ({
 };
 
 export const Hook: React.FC = () => {
-  const frame = useCurrentFrame();
   const title = useEnter(0);
   const headline = useEnter(4);
 
