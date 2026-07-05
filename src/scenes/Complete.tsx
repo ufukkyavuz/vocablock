@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { PhoneFrame } from "../components/PhoneFrame";
-import { colors, fonts } from "../tokens";
+import { colors, fonts, gradients } from "../tokens";
 import { useEnter } from "../utils";
 
 export const Complete: React.FC = () => {
@@ -17,7 +17,7 @@ export const Complete: React.FC = () => {
   const stampIn = useEnter(58);
 
   return (
-    <AbsoluteFill style={{ background: colors.background }}>
+    <AbsoluteFill style={{ background: gradients.light }}>
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "flex-start", paddingTop: 150 }}>
         <div style={{ textAlign: "center", marginBottom: 56, padding: "0 90px" }}>
           <div style={{ fontFamily: fonts.ui, fontWeight: 700, fontSize: 44, color: colors.textDark, lineHeight: 1.15 }}>

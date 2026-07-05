@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, interpolate } from "remotion";
 import { PhoneFrame } from "../components/PhoneFrame";
-import { colors, fonts } from "../tokens";
+import { colors, fonts, gradients } from "../tokens";
 import { useEnter } from "../utils";
 
 const AppBadge: React.FC<{ label: string; delay: number }> = ({ label, delay }) => {
@@ -34,7 +34,7 @@ export const LockScene: React.FC = () => {
   const phone = useEnter(6);
 
   return (
-    <AbsoluteFill style={{ background: colors.background }}>
+    <AbsoluteFill style={{ background: gradients.light }}>
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "flex-start", paddingTop: 150 }}>
         <div
           style={{
