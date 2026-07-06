@@ -10,12 +10,10 @@ import { FocusSetup } from "./demo/FocusSetup";
 import { Locked } from "./demo/Locked";
 import { SessionFlip } from "./demo/SessionFlip";
 import { CompleteDemo } from "./demo/CompleteDemo";
-import { MidText } from "./demo/MidText";
-import { PaywallDemo } from "./demo/PaywallDemo";
 import { Outro } from "./demo/Outro";
 import { DEMO_DURATIONS } from "./demo/durations";
 
-const T = 8;
+const T = 18;
 
 export { DEMO_DURATIONS };
 
@@ -46,12 +44,12 @@ export const Demo: React.FC = () => {
       <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.config}>
         <SessionConfig />
       </TransitionSeries.Sequence>
-      <TransitionSeries.Transition timing={timing} presentation={slide({ direction: "from-left" })} />
+      <TransitionSeries.Transition timing={timing} presentation={fade()} />
 
       <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.focus}>
         <FocusSetup />
       </TransitionSeries.Sequence>
-      <TransitionSeries.Transition timing={timing} presentation={fade()} />
+      <TransitionSeries.Transition timing={timing} presentation={slide({ direction: "from-left" })} />
 
       <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.locked}>
         <Locked />
@@ -65,16 +63,6 @@ export const Demo: React.FC = () => {
 
       <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.complete}>
         <CompleteDemo />
-      </TransitionSeries.Sequence>
-      <TransitionSeries.Transition timing={timing} presentation={fade()} />
-
-      <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.midText}>
-        <MidText />
-      </TransitionSeries.Sequence>
-      <TransitionSeries.Transition timing={timing} presentation={fade()} />
-
-      <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.paywall}>
-        <PaywallDemo />
       </TransitionSeries.Sequence>
       <TransitionSeries.Transition timing={timing} presentation={fade()} />
 
