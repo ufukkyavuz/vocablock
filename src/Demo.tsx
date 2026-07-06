@@ -2,6 +2,7 @@ import React from "react";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { slide } from "@remotion/transitions/slide";
+import { Intro } from "./demo/Intro";
 import { Splash } from "./demo/Splash";
 import { Home } from "./demo/Home";
 import { SessionConfig } from "./demo/SessionConfig";
@@ -9,10 +10,12 @@ import { FocusSetup } from "./demo/FocusSetup";
 import { Locked } from "./demo/Locked";
 import { SessionFlip } from "./demo/SessionFlip";
 import { CompleteDemo } from "./demo/CompleteDemo";
+import { MidText } from "./demo/MidText";
 import { PaywallDemo } from "./demo/PaywallDemo";
+import { Outro } from "./demo/Outro";
 import { DEMO_DURATIONS } from "./demo/durations";
 
-const T = 12;
+const T = 8;
 
 export { DEMO_DURATIONS };
 
@@ -25,6 +28,11 @@ const timing = linearTiming({ durationInFrames: T });
 export const Demo: React.FC = () => {
   return (
     <TransitionSeries>
+      <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.intro}>
+        <Intro />
+      </TransitionSeries.Sequence>
+      <TransitionSeries.Transition timing={timing} presentation={fade()} />
+
       <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.splash}>
         <Splash />
       </TransitionSeries.Sequence>
@@ -38,7 +46,7 @@ export const Demo: React.FC = () => {
       <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.config}>
         <SessionConfig />
       </TransitionSeries.Sequence>
-      <TransitionSeries.Transition timing={timing} presentation={slide({ direction: "from-right" })} />
+      <TransitionSeries.Transition timing={timing} presentation={slide({ direction: "from-left" })} />
 
       <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.focus}>
         <FocusSetup />
@@ -48,7 +56,7 @@ export const Demo: React.FC = () => {
       <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.locked}>
         <Locked />
       </TransitionSeries.Sequence>
-      <TransitionSeries.Transition timing={timing} presentation={slide({ direction: "from-right" })} />
+      <TransitionSeries.Transition timing={timing} presentation={fade()} />
 
       <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.flip}>
         <SessionFlip />
@@ -58,10 +66,20 @@ export const Demo: React.FC = () => {
       <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.complete}>
         <CompleteDemo />
       </TransitionSeries.Sequence>
-      <TransitionSeries.Transition timing={timing} presentation={slide({ direction: "from-bottom" })} />
+      <TransitionSeries.Transition timing={timing} presentation={fade()} />
+
+      <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.midText}>
+        <MidText />
+      </TransitionSeries.Sequence>
+      <TransitionSeries.Transition timing={timing} presentation={fade()} />
 
       <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.paywall}>
         <PaywallDemo />
+      </TransitionSeries.Sequence>
+      <TransitionSeries.Transition timing={timing} presentation={fade()} />
+
+      <TransitionSeries.Sequence durationInFrames={DEMO_DURATIONS.outro}>
+        <Outro />
       </TransitionSeries.Sequence>
     </TransitionSeries>
   );

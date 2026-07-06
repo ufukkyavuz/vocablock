@@ -1,13 +1,8 @@
 import React from "react";
-import { Stage, RealScreen } from "./ui";
-import { DEMO_DURATIONS } from "./durations";
+import { Stage, TiltPhone } from "./ui";
 
 export const Splash: React.FC = () => (
-  <Stage tone="dark">
-    <RealScreen
-      src="screens/splash.png"
-      durationInFrames={DEMO_DURATIONS.splash}
-      kenBurns={{ fromScale: 1, toScale: 1.05, toY: -8 }}
-    />
+  <Stage tone="lime">
+    <TiltPhone src="screens/splash.png" rotateX={4} rotateY={-8} rotateZ={-2} />
   </Stage>
 );

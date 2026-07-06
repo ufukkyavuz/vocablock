@@ -1,15 +1,10 @@
 import React from "react";
-import { Stage, RealScreen, ConfettiOverlay } from "./ui";
-import { DEMO_DURATIONS } from "./durations";
+import { Stage, TiltPhone, ConfettiOverlay } from "./ui";
 
 export const CompleteDemo: React.FC = () => (
-  <Stage tone="light">
-    <RealScreen
-      src="screens/Complete.png"
-      durationInFrames={DEMO_DURATIONS.complete}
-      kenBurns={{ fromScale: 1.02, toScale: 1.07, toY: -12 }}
-    >
-      <ConfettiOverlay startAt={10} fromY={140} />
-    </RealScreen>
+  <Stage tone="lime">
+    <TiltPhone src="screens/Complete.png" rotateX={5} rotateY={8} rotateZ={-1}>
+      <ConfettiOverlay startAt={8} fromY={140} />
+    </TiltPhone>
   </Stage>
 );

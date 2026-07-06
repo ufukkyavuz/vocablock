@@ -9,93 +9,68 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { colors } from "../tokens";
+import { colors, fonts } from "../tokens";
 
-/** Full-frame backdrop behind the device — the real screens sit on top, untouched. */
+const SOLID: Record<string, string> = {
+  black: "#0b0b0c",
+  dark: "#0e1625",
+  lime: "#a2f023",
+  light: "#f9fbf8",
+};
+
+/** Full-bleed flat brand-color backdrop — no gradient, changes per beat for punch. */
 export const Stage: React.FC<{
   children: React.ReactNode;
-  tone?: "light" | "dark";
-}> = ({ children, tone = "light" }) => {
-  const frame = useCurrentFrame();
-  const drift = interpolate(frame, [0, 120], [0, 1], { extrapolateRight: "extend" });
-  const angle = 155 + Math.sin(drift * Math.PI * 2) * 8;
-  const bg =
-    tone === "light"
-      ? `linear-gradient(${angle}deg, #edf7dd 0%, #f9fbf8 50%, #f0f5ec 100%)`
-      : `linear-gradient(${angle}deg, #16233b 0%, #0e1625 55%, #0a1017 100%)`;
-  return (
-    <AbsoluteFill style={{ background: bg }}>
-      <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
-        {children}
-      </AbsoluteFill>
-    </AbsoluteFill>
-  );
-};
-
-type KenBurns = {
-  fromScale?: number;
-  toScale?: number;
-  fromX?: number;
-  toX?: number;
-  fromY?: number;
-  toY?: number;
-};
+  tone?: "light" | "dark" | "lime" | "black";
+}> = ({ children, tone = "light" }) => (
+  <AbsoluteFill style={{ background: SOLID[tone] }}>
+    <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>{children}</AbsoluteFill>
+  </AbsoluteFill>
+);
 
 /**
- * Renders one real, unmodified app screenshot. The only motion applied is
- * camera-style (entrance spring + Ken Burns pan/zoom) — the screenshot
- * pixels themselves are never redrawn. `children` are positioned in the
- * screenshot's own pixel space (0..width, 0..height) so overlays (tap dots,
- * glows) track the real UI exactly regardless of final on-canvas scale.
+ * Renders one real, unmodified app screenshot with a 3D perspective tilt —
+ * the screenshot pixels themselves are never redrawn or cropped. The device
+ * flies in from an angle and settles into its target tilt on a snappy
+ * spring. `children` are positioned in the screenshot's own pixel space so
+ * overlays track the real UI exactly regardless of final on-canvas scale.
  */
-export const RealScreen: React.FC<{
+export const TiltPhone: React.FC<{
   src: string;
-  durationInFrames: number;
   width?: number;
   height?: number;
   scale?: number;
-  kenBurns?: KenBurns;
+  rotateX?: number;
+  rotateY?: number;
+  rotateZ?: number;
   shake?: boolean;
   children?: React.ReactNode;
-}> = ({
-  src,
-  durationInFrames,
-  width = 390,
-  height = 815,
-  scale = 2.3,
-  kenBurns,
-  shake,
-  children,
-}) => {
+}> = ({ src, width = 390, height = 815, scale = 2.3, rotateX = 4, rotateY = -8, rotateZ = 0, shake, children }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const enter = spring({ frame, fps, config: { damping: 200, mass: 0.7 } });
-  const entryScale = interpolate(enter, [0, 1], [0.92, 1]);
+  const enter = spring({ frame, fps, config: { damping: 14, mass: 0.9 } });
+  const entryScale = interpolate(enter, [0, 1], [0.72, 1]);
+  const entryRotY = interpolate(enter, [0, 1], [rotateY - 30, rotateY]);
   const opacity = interpolate(enter, [0, 1], [0, 1]);
-
-  const kb: KenBurns = { fromScale: 1, toScale: 1.05, fromX: 0, toX: 0, fromY: 0, toY: -8, ...kenBurns };
-  const t = interpolate(frame, [0, durationInFrames], [0, 1], { extrapolateRight: "clamp" });
-  const kbScale = interpolate(t, [0, 1], [kb.fromScale!, kb.toScale!]);
-  const kbX = interpolate(t, [0, 1], [kb.fromX!, kb.toX!]);
-  const kbY = interpolate(t, [0, 1], [kb.fromY!, kb.toY!]);
   const shakeX = shake
     ? Math.sin(frame * 1.4) * interpolate(frame, [0, 20], [10, 0], { extrapolateRight: "clamp" })
     : 0;
 
   return (
-    <div style={{ opacity, transform: `translate(${kbX + shakeX}px, ${kbY}px)` }}>
+    <div style={{ perspective: 1600, opacity }}>
       <div
         style={{
-          transform: `scale(${entryScale * scale * kbScale})`,
+          transform: `translateX(${shakeX}px) scale(${entryScale * scale}) rotateX(${rotateX}deg) rotateY(${entryRotY}deg) rotateZ(${rotateZ}deg)`,
+          transformStyle: "preserve-3d",
           transformOrigin: "center",
           position: "relative",
           width,
           height,
-          filter: "drop-shadow(0 40px 90px rgba(0,0,0,0.35))",
+          filter: "drop-shadow(0 55px 100px rgba(0,0,0,0.5))",
         }}
       >
-        <Img src={staticFile(src)} style={{ width, height, display: "block" }} />
+        <Img src={staticFile(src)} style={{ width, height, display: "block", borderRadius: 28 }} />
         {children}
       </div>
     </div>
@@ -104,9 +79,9 @@ export const RealScreen: React.FC<{
 
 /**
  * The "flip" beat: two real full-screen captures (word / definition) joined
- * by a whole-device 3D rotation — a standard mobile transition metaphor, not
- * a redraw of the card. Settles into a crossfade to a third real capture
- * (progress advanced) so the whole beat uses only genuine screenshots.
+ * by a whole-device 3D rotation — a transition, not a redraw of the card.
+ * Settles into a crossfade to a third real capture (progress advanced) so
+ * the whole beat uses only genuine screenshots.
  */
 export const RealFlip: React.FC<{
   frontSrc: string;
@@ -117,12 +92,13 @@ export const RealFlip: React.FC<{
   width?: number;
   height?: number;
   scale?: number;
+  rotateX?: number;
   children?: React.ReactNode;
-}> = ({ frontSrc, backSrc, nextSrc, flipAt, nextAt, width = 390, height = 815, scale = 2.3, children }) => {
+}> = ({ frontSrc, backSrc, nextSrc, flipAt, nextAt, width = 390, height = 815, scale = 2.3, rotateX = 2, children }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const enter = spring({ frame, fps, config: { damping: 200, mass: 0.7 } });
-  const entryScale = interpolate(enter, [0, 1], [0.92, 1]);
+  const enter = spring({ frame, fps, config: { damping: 14, mass: 0.9 } });
+  const entryScale = interpolate(enter, [0, 1], [0.72, 1]);
   const opacity = interpolate(enter, [0, 1], [0, 1]);
 
   const flip = interpolate(frame, [flipAt, flipAt + 16], [0, 180], {
@@ -135,16 +111,15 @@ export const RealFlip: React.FC<{
   });
 
   return (
-    <div style={{ opacity }}>
+    <div style={{ perspective: 1800, opacity }}>
       <div
         style={{
-          transform: `scale(${entryScale * scale})`,
+          transform: `scale(${entryScale * scale}) rotateX(${rotateX}deg)`,
           transformOrigin: "center",
           position: "relative",
           width,
           height,
-          filter: "drop-shadow(0 40px 90px rgba(0,0,0,0.35))",
-          perspective: 1800,
+          filter: "drop-shadow(0 55px 100px rgba(0,0,0,0.5))",
         }}
       >
         <div
@@ -157,12 +132,12 @@ export const RealFlip: React.FC<{
           }}
         >
           <div style={{ position: "absolute", inset: 0, backfaceVisibility: "hidden" }}>
-            <Img src={staticFile(frontSrc)} style={{ width, height, display: "block" }} />
+            <Img src={staticFile(frontSrc)} style={{ width, height, display: "block", borderRadius: 28 }} />
           </div>
           <div style={{ position: "absolute", inset: 0, backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}>
-            <Img src={staticFile(backSrc)} style={{ width, height, display: "block" }} />
+            <Img src={staticFile(backSrc)} style={{ width, height, display: "block", borderRadius: 28 }} />
             <div style={{ position: "absolute", inset: 0, opacity: nextDissolve }}>
-              <Img src={staticFile(nextSrc)} style={{ width, height, display: "block" }} />
+              <Img src={staticFile(nextSrc)} style={{ width, height, display: "block", borderRadius: 28 }} />
             </div>
           </div>
         </div>
@@ -172,64 +147,43 @@ export const RealFlip: React.FC<{
   );
 };
 
-/** Decorative tap ripple. x/y are in the screenshot's own pixel space. */
-export const TapDot: React.FC<{ x: number; y: number; at: number }> = ({ x, y, at }) => {
+/** Bold staggered-line typography card — pure motion graphics, no screen involved. */
+export const TitleCard: React.FC<{
+  lines: string[];
+  tone?: "light" | "dark" | "lime" | "black";
+  color?: string;
+  align?: "left" | "center";
+  fontSize?: number;
+}> = ({ lines, tone = "black", color = "#fff", align = "center", fontSize = 84 }) => {
   const frame = useCurrentFrame();
-  const local = frame - at;
-  if (local < 0 || local > 26) return null;
-  const press = interpolate(local, [0, 6, 12], [0, 1, 0.85], { extrapolateRight: "clamp" });
-  const ripple = interpolate(local, [0, 26], [0, 1], { extrapolateRight: "clamp" });
+  const { fps } = useVideoConfig();
   return (
-    <div style={{ position: "absolute", left: x, top: y, pointerEvents: "none" }}>
-      <div
-        style={{
-          position: "absolute",
-          width: 90,
-          height: 90,
-          marginLeft: -45,
-          marginTop: -45,
-          borderRadius: "50%",
-          border: `4px solid ${colors.primary}`,
-          transform: `scale(${interpolate(ripple, [0, 1], [0.3, 2.2])})`,
-          opacity: interpolate(ripple, [0, 0.15, 1], [0, 0.9, 0]),
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          width: 46,
-          height: 46,
-          marginLeft: -23,
-          marginTop: -23,
-          borderRadius: "50%",
-          background: "rgba(14,22,37,0.7)",
-          transform: `scale(${press})`,
-        }}
-      />
-    </div>
-  );
-};
-
-/** Soft lime highlight pulse, screen-blended so it never occludes real content. */
-export const PulseGlow: React.FC<{ x: number; y: number; size?: number }> = ({ x, y, size = 260 }) => {
-  const frame = useCurrentFrame();
-  const pulse = 0.22 + 0.18 * Math.sin(frame / 6);
-  return (
-    <div
-      style={{
-        position: "absolute",
-        left: x,
-        top: y,
-        width: size,
-        height: size,
-        marginLeft: -size / 2,
-        marginTop: -size / 2,
-        borderRadius: "50%",
-        background: `radial-gradient(circle, rgba(162,240,35,${pulse}) 0%, rgba(162,240,35,0) 70%)`,
-        mixBlendMode: "screen",
-        pointerEvents: "none",
-      }}
-    />
+    <Stage tone={tone}>
+      <div style={{ display: "flex", flexDirection: "column", padding: "0 64px" }}>
+        {lines.map((line, i) => {
+          const e = spring({ frame: frame - i * 6, fps, config: { damping: 14 } });
+          return (
+            <div
+              key={line}
+              style={{
+                fontFamily: fonts.ui,
+                fontWeight: 700,
+                fontSize,
+                color,
+                lineHeight: 1.05,
+                letterSpacing: -2,
+                textAlign: align,
+                alignSelf: align === "center" ? "center" : i % 2 ? "flex-end" : "flex-start",
+                opacity: e,
+                transform: `translateY(${interpolate(e, [0, 1], [50, 0])}px)`,
+              }}
+            >
+              {line}
+            </div>
+          );
+        })}
+      </div>
+    </Stage>
   );
 };
 
