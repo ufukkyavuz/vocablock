@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, interpolate } from "remotion";
 import { PhoneFrame } from "../components/PhoneFrame";
-import { colors, fonts } from "../tokens";
+import { colors, fonts, gradients } from "../tokens";
 import { useEnter } from "../utils";
 
 const Feature: React.FC<{ text: string; delay: number }> = ({ text, delay }) => {
@@ -30,7 +30,7 @@ export const Paywall: React.FC = () => {
   const plan = useEnter(24);
 
   return (
-    <AbsoluteFill style={{ background: colors.background }}>
+    <AbsoluteFill style={{ background: gradients.light }}>
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "flex-start", paddingTop: 150 }}>
         <div style={{ textAlign: "center", marginBottom: 56, padding: "0 90px" }}>
           <div style={{ fontFamily: fonts.ui, fontWeight: 700, fontSize: 40, color: colors.textDark, lineHeight: 1.15 }}>

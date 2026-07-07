@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, interpolate } from "remotion";
 import { PhoneFrame } from "../components/PhoneFrame";
-import { colors, fonts } from "../tokens";
+import { colors, fonts, gradients } from "../tokens";
 import { useEnter } from "../utils";
 
 const StatPill: React.FC<{ value: string; label: string; delay: number }> = ({
@@ -38,7 +38,7 @@ export const Hook: React.FC = () => {
   const headline = useEnter(4);
 
   return (
-    <AbsoluteFill style={{ background: colors.foreground }}>
+    <AbsoluteFill style={{ background: gradients.dark }}>
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "flex-start", paddingTop: 140 }}>
         <div
           style={{

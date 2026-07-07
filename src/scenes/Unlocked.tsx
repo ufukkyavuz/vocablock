@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, interpolate } from "remotion";
-import { colors, fonts } from "../tokens";
+import { colors, fonts, gradients } from "../tokens";
 import { useEnter } from "../utils";
 
 const AppChip: React.FC<{ label: string; delay: number }> = ({ label, delay }) => {
@@ -34,7 +34,7 @@ export const Unlocked: React.FC = () => {
   const badge = useEnter(10, { damping: 12 });
 
   return (
-    <AbsoluteFill style={{ background: colors.foreground, alignItems: "center", justifyContent: "center" }}>
+    <AbsoluteFill style={{ background: gradients.dark, alignItems: "center", justifyContent: "center" }}>
       <div
         style={{
           opacity: badge,

@@ -14,6 +14,13 @@ export const colors = {
   destructiveTint: "rgba(220,38,38,0.1)",
 } as const;
 
+// Background gradients matching the app's visual language:
+// light gradient for in-app / splash screens, dark for the locked-app state.
+export const gradients = {
+  light: "linear-gradient(160deg, #edf7dd 0%, #f9fbf8 50%, #f0f5ec 100%)",
+  dark: "linear-gradient(160deg, #16233b 0%, #0e1625 55%, #0a1017 100%)",
+} as const;
+
 export const radius = {
   md: 14,
   card: 24,

@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, interpolate } from "remotion";
-import { colors, fonts } from "../tokens";
+import { colors, fonts, gradients } from "../tokens";
 import { useEnter } from "../utils";
 
 export const Outro: React.FC = () => {
@@ -11,7 +11,7 @@ export const Outro: React.FC = () => {
   return (
     <AbsoluteFill
       style={{
-        background: colors.foreground,
+        background: gradients.dark,
         alignItems: "center",
         justifyContent: "center",
       }}

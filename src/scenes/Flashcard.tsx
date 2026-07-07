@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { PhoneFrame } from "../components/PhoneFrame";
-import { colors, fonts } from "../tokens";
+import { colors, fonts, gradients } from "../tokens";
 import { useEnter } from "../utils";
 
 const FLIP_START = 34;
@@ -29,7 +29,7 @@ export const Flashcard: React.FC = () => {
   });
 
   return (
-    <AbsoluteFill style={{ background: colors.background }}>
+    <AbsoluteFill style={{ background: gradients.light }}>
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "flex-start", paddingTop: 150 }}>
         <div
           style={{

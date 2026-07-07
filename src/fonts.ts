@@ -4,8 +4,26 @@ import { loadFont } from "@remotion/fonts";
 export const fontsLoaded = Promise.all([
   loadFont({
     family: "Outfit",
-    url: staticFile("fonts/outfit-variable.woff2"),
-    weight: "100 900",
+    url: staticFile("fonts/outfit-400.woff2"),
+    weight: "400",
+    style: "normal",
+  }),
+  loadFont({
+    family: "Outfit",
+    url: staticFile("fonts/outfit-500.woff2"),
+    weight: "500",
+    style: "normal",
+  }),
+  loadFont({
+    family: "Outfit",
+    url: staticFile("fonts/outfit-600.woff2"),
+    weight: "600",
+    style: "normal",
+  }),
+  loadFont({
+    family: "Outfit",
+    url: staticFile("fonts/outfit-700.woff2"),
+    weight: "700",
     style: "normal",
   }),
   loadFont({
