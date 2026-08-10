@@ -14,7 +14,9 @@
     "remotion": "4.0.484"
   },
   "devDependencies": {
+    "@remotion/bundler": "4.0.484",
     "@remotion/eslint-config-flat": "4.0.484",
+    "@remotion/renderer": "4.0.484",
     "@types/react": "19.2.7",
     "@types/web": "0.0.166",
     "eslint": "9.19.0",
@@ -26,9 +28,11 @@
     "render": "remotion render Promo out/vocablock-promo.mp4",
     "still": "remotion still Promo out/vocablock-promo.png",
     "upgrade": "remotion upgrade",
-    "lint": "eslint src && tsc"
+    "lint": "eslint src && tsc",
+    "screenshots": "node scripts/render-screenshots.mjs"
   },
   "sideEffects": [
-    "*.css"
+    "*.css",
+    "./src/fonts.ts"
   ]
 }
