@@ -60,11 +60,11 @@ Distilled from the ASO guides listed at the bottom, and applied here:
 | 1320×2868 (6.9" iPhone) covers the whole modern iPhone gallery | `SHOT_WIDTH`/`SHOT_HEIGHT` in `src/appstore/config.ts` |
 | Vertical is the format — ~96% of top apps | All 8 frames |
 | The first three frames carry the install decision (they appear in search results) | Problem → fix → retention proof, in that order |
-| 3–5 words per caption, bold, legible at thumbnail size | Every headline is two short lines; `ContactSheet` renders the set at 150px to check |
-| One dominant element per frame | One accent phrase per headline, one focal screen per device |
-| ~60% of the frame should be real app UI, not marketing art | Device starts at y=780 and bleeds off the bottom edge |
+| Short captions, bold, legible at thumbnail size | Two short lines each, with the payload phrase in the heavy weight; `ContactSheet` renders the set at 150px to check |
+| One dominant element per frame | One heavy phrase per headline, one focal screen per device |
+| ~60% of the frame should be real app UI, not marketing art | Device starts at y=700 and bleeds off the bottom edge |
 | Pull the palette from the icon, don't chase trend colors | `src/tokens.ts` — the Figma variables, unchanged |
-| Caption contrast at WCAG AA (4.5:1) | Sub-captions use `#5b6470` on light, not the app's `#888` |
+| Caption contrast at WCAG AA (4.5:1) | Captions are near-black `#0d1420` on the lit ground, well past AA |
 | Social proof around position 3 | Slot built into frame 3, **disabled** until real numbers exist (see §4) |
 | Up to 10 slots, but only use frames that add information | 8 frames; nothing repeats a point |
 | Localize by adapting, not translating flattened images | TR captions in §5 |
@@ -73,18 +73,44 @@ Distilled from the ASO guides listed at the bottom, and applied here:
 
 | # | File | Headline | Job |
 | --- | --- | --- | --- |
-| 1 | `01-lock.png` | Pay **one word** to scroll. | States the mechanic and the price in one line. The shield screen is the product's single most recognizable moment. |
-| 2 | `02-learn.png` | Learn it. Then **unlock**. | Shows the loop is 30 seconds, not a lesson. Kills the "this will be a chore" objection. |
-| 3 | `03-retention.png` | Words that **actually stick**. | The spaced-repetition schedule, shown rather than claimed. This is the retention proof, and the slot where a ratings badge goes once one exists. |
-| 4 | `04-reels.png` | **Reels** in. Vocabulary out. | The differentiator. Nothing else in the category can show this frame. |
-| 5 | `05-depth.png` | **Real** definitions. Real sentences. | Depth: CEFR level, synonyms, example sentence. Separates VocabLock from phrasebook apps. |
-| 6 | `06-control.png` | You choose what **locks**. | Answers the objection that sinks blockers — "I can't lock everything, I need WhatsApp." |
-| 7 | `07-progress.png` | Every session, **sharper**. | The outcome, including screen time traded. |
-| 8 | `08-cta.png` | **Lock** the scroll. **Learn** the word. | Close: mark, tagline, three reasons. |
+| 1 | `01-lock.png` | Your scroll now **costs one word**. | States the mechanic and the price in one line. Two lifted notification cards carry the nudge that arrives *before* the shield, so they say something the screen underneath cannot. |
+| 2 | `02-learn.png` | Learn it, and **the app opens**. | Shows the loop is 30 seconds, not a lesson. Kills the "this will be a chore" objection. |
+| 3 | `03-retention.png` | Built so the words **actually stay**. | The spaced-repetition schedule, shown rather than claimed. This is the retention proof, and the slot where a ratings badge goes once one exists. |
+| 4 | `04-reels.png` | Turns your reels into **your word list**. | The differentiator. Nothing else in the category can show this frame. |
+| 5 | `05-depth.png` | Real meanings, **real sentences**. | Depth: CEFR level, synonyms, example sentence. Separates VocabLock from phrasebook apps. |
+| 6 | `06-control.png` | You decide **what gets locked**. | Answers the objection that sinks blockers — "I can't lock everything, I need WhatsApp." |
+| 7 | `07-progress.png` | Watch your English **get sharper**. | The outcome, including screen time traded. |
+| 8 | `08-cta.png` | **Lock the scroll.** Learn the word. | Close: mark, tagline, three reasons. |
 
-Frames 1, 4, 7 and 8 are on the dark surface, the rest light. The alternation
-gives the row of thumbnails a rhythm and keeps neighbouring frames from merging
-into one block at gallery size.
+### Visual treatment
+
+All eight frames share one lit ground rather than alternating light and dark
+panels. The reference point is the current top of this category's craft — Opal's
+gallery — and what makes that set work is not its colours but three decisions:
+
+1. **The frame is a lit space, not a slide.** A bloom sits behind where the
+   phone stands, with a lime haze and a cool cast falling off to the corners
+   (`Atmosphere.tsx`). A flat fill makes a device mockup look pasted on; giving
+   the phone something to be lit by makes the eight frames read as one shoot.
+2. **The device is an object.** It is turned a few degrees on two axes with a
+   real shadow and a single soft glare (`Device.tsx`, `pose`). Frames alternate
+   between a turned pose and a near-flat one so the row has rhythm.
+3. **The argument is lifted off the screen.** At 1320px wide the UI is a long
+   way away, so the one element that carries a frame gets pulled out, enlarged,
+   and floated in the bright band between headline and device (`Floating.tsx`).
+   Only frames 1, 4 and 6 use this — a lifted card that repeats what is already
+   legible on screen is noise, and five of the eight frames don't need one.
+
+Two supporting choices: emphasis in the headlines is carried by **weight, not
+colour**, because a two-colour headline turns into stripes at thumbnail size;
+and the ground is kept deep enough at the edges that VocabLock's near-white app
+screens still have an edge to sit against, which is the inverse of Opal's
+problem (their UI is dark, so their ground can be pale).
+
+The drifting fragments are lettering rather than mineral chips. Same device in
+the composition, but made of the material this particular product is made of —
+and they are pinned to the outer margins, because anything crossing the middle
+lands on live UI and reads as a smudge.
 
 ### Store metadata to match
 
@@ -116,20 +142,20 @@ Flip `enabled` once the numbers are real; the frame keeps working either way.
 
 ## 5. Turkish storefront
 
-Turkish runs roughly 15–25% longer than English, and two of the headlines break
-badly if translated literally. These are rewritten to fit the same two-line
-block, not translated:
+Turkish runs roughly 15–25% longer than English, and several of these break
+badly if translated literally. They are rewritten to fit the same two-line
+block with the same phrase carrying the heavy weight, not translated:
 
-| # | TR headline | TR sub |
-| --- | --- | --- |
-| 1 | Kaydırmanın bedeli: **bir kelime**. | Öğrenene kadar Instagram kapalı. |
-| 2 | Öğren. Sonra **aç**. | Kelime, anlam, örnek — bir dakikadan kısa. |
-| 3 | **Aklında kalan** kelimeler. | Aralıklı tekrar her kelimeyi zamanında geri getirir. |
-| 4 | **Reels** girer. Kelime çıkar. | Bir reel'de bizi etiketle — kelimeleri biz çıkaralım. |
-| 5 | **Gerçek** anlam. Gerçek cümle. | Sınav ve gerçek İngilizce için — turistik kalıplar değil. |
-| 6 | **Neyin** kilitleneceğini sen seç. | İhtiyacın olan uygulamalar açık kalsın. |
-| 7 | Her seansta **daha keskin**. | Hangi kelimenin kaldığını tam olarak gör. |
-| 8 | Kaydırmayı **kilitle**. Kelimeyi **öğren**. | — |
+| # | TR headline |
+| --- | --- |
+| 1 | Kaydırmanın bedeli artık **bir kelime**. |
+| 2 | Öğren, **uygulama açılsın**. |
+| 3 | Kelimeler **aklında kalsın** diye. |
+| 4 | Reels'lerini **kelime listene** çevirir. |
+| 5 | Gerçek anlamlar, **gerçek cümleler**. |
+| 6 | **Neyin kilitleneceğine** sen karar ver. |
+| 7 | İngilizcenin **keskinleştiğini gör**. |
+| 8 | **Kaydırmayı kilitle.** Kelimeyi öğren. |
 
 For the TR storefront, consider promoting frame 5 (exam depth) to position 3:
 YDS/YÖKDİL intent is a much stronger install driver there than the retention

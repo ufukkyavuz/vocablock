@@ -3,6 +3,11 @@ import { DEVICE_SCALE, SCREEN_H, SCREEN_W, layout } from "./config";
 
 export const DEVICE_W = SCREEN_W * DEVICE_SCALE + layout.deviceBorder * 2;
 
+const poses = {
+  flat: "perspective(3000px) rotateX(1.5deg)",
+  tilt: "perspective(2600px) rotateY(-9deg) rotateX(3.5deg) rotateZ(-2.2deg)",
+} as const;
+
 /**
  * Device mockup for the screenshot set.
  *
@@ -10,25 +15,37 @@ export const DEVICE_W = SCREEN_W * DEVICE_SCALE + layout.deviceBorder * 2;
  * screen written here looks the same as the one written for the promo video.
  * CSS transforms scale vectors and text, not pixels, so type stays crisp at
  * 1320x2868.
+ *
+ * The turned pose matters more than it looks: a dead-flat mockup reads as a
+ * slide, while a few degrees of rotation plus a real shadow reads as an object
+ * in a lit space, which is what the rest of the frame is built to suggest.
  */
 export const Device: React.FC<{
   children: React.ReactNode;
   background: string;
   statusBarTint?: "dark" | "light";
-}> = ({ children, background, statusBarTint = "dark" }) => {
+  pose?: keyof typeof poses;
+  /** Push the device down to open a band for a lifted card to straddle. */
+  offsetY?: number;
+}> = ({ children, background, statusBarTint = "dark", pose = "flat", offsetY = 0 }) => {
   return (
     <div
       style={{
         position: "absolute",
-        top: layout.deviceTop,
+        top: layout.deviceTop + offsetY,
         left: "50%",
-        transform: "translateX(-50%)",
         width: DEVICE_W,
+        transform: `translateX(-50%) ${poses[pose]}`,
+        transformOrigin: "50% 20%",
         borderTopLeftRadius: layout.deviceRadius,
         borderTopRightRadius: layout.deviceRadius,
         border: `${layout.deviceBorder}px solid #0a0f19`,
         borderBottom: "none",
-        boxShadow: "0 60px 120px rgba(0,0,0,0.38)",
+        boxShadow: [
+          "0 6px 0 rgba(255,255,255,0.35)",
+          "0 70px 90px -30px rgba(24,40,20,0.45)",
+          "0 180px 160px -60px rgba(24,40,20,0.3)",
+        ].join(", "),
         overflow: "hidden",
         background,
       }}
@@ -36,7 +53,6 @@ export const Device: React.FC<{
       <div
         style={{
           width: SCREEN_W * DEVICE_SCALE,
-          // Tall enough to fill past the bottom edge of the shot.
           height: SCREEN_H * DEVICE_SCALE,
           position: "relative",
           overflow: "hidden",
@@ -53,6 +69,17 @@ export const Device: React.FC<{
           <StatusBar tint={statusBarTint} />
           {children}
         </div>
+
+        {/* Glass glare — a single soft diagonal, kept faint so UI stays legible. */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(118deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.05) 26%, rgba(255,255,255,0) 46%)",
+            pointerEvents: "none",
+          }}
+        />
       </div>
     </div>
   );

@@ -1,51 +1,26 @@
 import React from "react";
 import { AbsoluteFill } from "remotion";
 import { colors, fonts } from "../tokens";
-import { SHOT_HEIGHT, SHOT_WIDTH, layout } from "./config";
+import { Ground, Shards } from "./Atmosphere";
+import { SHOT_HEIGHT, SHOT_WIDTH, layout, socialProof } from "./config";
 
-type Surface = "dark" | "light";
-
-// Caption colors are held to WCAG AA (4.5:1) against their surface. The muted
-// grey used inside the app UI (#888) only reaches ~3.5:1 on the light
-// background, which is fine at UI scale but not for a gallery caption.
-const surfaces: Record<
-  Surface,
-  { bg: string; headline: string; sub: string; deviceBg: string }
-> = {
-  dark: {
-    bg: colors.foreground,
-    headline: "#ffffff",
-    sub: "rgba(255,255,255,0.68)",
-    deviceBg: colors.background,
-  },
-  light: {
-    bg: colors.background,
-    headline: colors.textDark,
-    sub: "#5b6470",
-    deviceBg: colors.background,
-  },
-};
+const INK = "#0d1420";
 
 /**
- * Renders a headline where segments wrapped in [brackets] take the brand
- * accent, e.g. "Pay [one word] to scroll." One accent phrase per frame keeps a
- * single focal point.
+ * Headline with weight contrast rather than colour contrast: segments wrapped
+ * in *asterisks* are set heavy, the rest regular. One ink colour means the
+ * caption still reads as a sentence at thumbnail size, where a two-colour
+ * headline turns into stripes.
  */
-const Headline: React.FC<{ text: string; color: string }> = ({ text, color }) => {
-  const parts = text.split(/(\[[^\]]+\])/g).filter(Boolean);
+const Headline: React.FC<{ text: string }> = ({ text }) => {
+  const parts = text.split(/(\*[^*]+\*)/g).filter(Boolean);
   return (
     <>
       {parts.map((part, i) => {
-        const accent = part.startsWith("[") && part.endsWith("]");
-        const content = accent ? part.slice(1, -1) : part;
+        const heavy = part.startsWith("*") && part.endsWith("*");
         return (
-          <span key={i} style={{ color: accent ? colors.primary : color }}>
-            {content.split("\n").map((line, j, all) => (
-              <React.Fragment key={j}>
-                {line}
-                {j < all.length - 1 ? <br /> : null}
-              </React.Fragment>
-            ))}
+          <span key={i} style={{ fontWeight: heavy ? 800 : 400 }}>
+            {heavy ? part.slice(1, -1) : part}
           </span>
         );
       })}
@@ -53,63 +28,65 @@ const Headline: React.FC<{ text: string; color: string }> = ({ text, color }) =>
   );
 };
 
-export const Frame: React.FC<{
-  surface: Surface;
-  headline: string;
-  sub?: string;
-  children: React.ReactNode;
-}> = ({ surface, headline, sub, children }) => {
-  const s = surfaces[surface];
-
+const RatingBadge: React.FC = () => {
+  if (!socialProof.enabled || !socialProof.rating) return null;
   return (
-    <AbsoluteFill style={{ background: s.bg, overflow: "hidden" }}>
-      {surface === "dark" ? (
-        <AbsoluteFill
-          style={{
-            background: `radial-gradient(ellipse 80% 40% at 50% 62%, rgba(162,240,35,0.14), transparent 70%)`,
-          }}
-        />
-      ) : null}
-
-      <div
-        style={{
-          position: "absolute",
-          top: layout.captionTop,
-          left: layout.gutter,
-          right: layout.gutter,
-          textAlign: "center",
-        }}
-      >
-        <div
-          style={{
-            fontFamily: fonts.ui,
-            fontWeight: 700,
-            fontSize: layout.headlineSize,
-            lineHeight: layout.headlineLeading,
-            letterSpacing: -2,
-          }}
-        >
-          <Headline text={headline} color={s.headline} />
-        </div>
-        {sub ? (
-          <div
-            style={{
-              marginTop: 32,
-              fontFamily: fonts.ui,
-              fontWeight: 500,
-              fontSize: layout.subSize,
-              lineHeight: 1.3,
-              color: s.sub,
-            }}
-          >
-            {sub}
-          </div>
-        ) : null}
+    <div
+      style={{
+        position: "absolute",
+        bottom: 68,
+        left: 0,
+        right: 0,
+        textAlign: "center",
+        fontFamily: fonts.ui,
+        color: INK,
+      }}
+    >
+      <div style={{ fontSize: 52, fontWeight: 800, letterSpacing: -1 }}>
+        {socialProof.rating} <span style={{ letterSpacing: 2 }}>★★★★★</span>
       </div>
-
-      {children}
-    </AbsoluteFill>
+      <div style={{ fontSize: 40, fontWeight: 700, letterSpacing: 1 }}>
+        {socialProof.ratingCount}
+      </div>
+    </div>
   );
 };
 
+export const Frame: React.FC<{
+  headline: string;
+  seed: number;
+  badge?: boolean;
+  children: React.ReactNode;
+}> = ({ headline, seed, badge, children }) => (
+  <AbsoluteFill style={{ overflow: "hidden" }}>
+    <Ground />
+    <Shards seed={seed} layer="back" />
+
+    <div
+      style={{
+        position: "absolute",
+        top: layout.captionTop,
+        left: layout.gutter,
+        right: layout.gutter,
+        textAlign: "center",
+        fontFamily: fonts.ui,
+        fontSize: layout.headlineSize,
+        lineHeight: layout.headlineLeading,
+        letterSpacing: -3.6,
+        color: INK,
+        textWrap: "balance",
+      }}
+    >
+      <Headline text={headline} />
+    </div>
+
+    {children}
+
+    <Shards seed={seed} layer="front" />
+    {badge ? <RatingBadge /> : null}
+  </AbsoluteFill>
+);
+
 export const SHOT_DIMENSIONS = { width: SHOT_WIDTH, height: SHOT_HEIGHT };
+export const FRAME_INK = INK;
+export const FRAME_ACCENT = colors.primary;

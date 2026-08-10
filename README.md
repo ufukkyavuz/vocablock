@@ -40,10 +40,16 @@ The same tokens that drive the video also drive an 8-frame App Store gallery at
 
 - `src/appstore/config.ts` — canvas size, layout constants, and the caption copy
   for all 8 frames in gallery order.
-- `src/appstore/Frame.tsx` — shared caption/surface system. A headline segment
-  wrapped in `[brackets]` takes the brand accent.
+- `src/appstore/Frame.tsx` — shared caption system. A headline segment wrapped
+  in `*asterisks*` is set in the heavy weight; emphasis is carried by weight
+  rather than colour so the caption survives thumbnail size.
+- `src/appstore/Atmosphere.tsx` — the lit ground every frame sits on, and the
+  drifting letter fragments pinned to the outer margins.
 - `src/appstore/Device.tsx` — device mockup; screens are authored in iPhone
-  points and scaled up, so they match the video's screens.
+  points and scaled up, so they match the video's screens. `pose` turns it a few
+  degrees, `offsetY` opens a band for a lifted card to straddle.
+- `src/appstore/Floating.tsx` — UI lifted off the screen and enlarged in front
+  of the device. Used only where it adds something the screen can't show.
 - `src/appstore/screens/*.tsx` — the static app screens shown in each frame.
 - `src/appstore/ContactSheet.tsx` — renders the whole set at search-result
   thumbnail size, to check captions are still legible there.
